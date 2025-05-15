@@ -1,6 +1,8 @@
 package com.learn.servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -8,8 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import com.learn.beans.ContactInfo;
-
-import jakarta.servlet.http.HttpSession;
+import com.learn.dao.ContactInfoDAO;
 
 /**
  * Servlet implementation class ContactInfoServlet
@@ -43,10 +44,21 @@ public class ContactInfoServlet extends HttpServlet {
         info.setState(request.getParameter("state"));
         info.setCountry(request.getParameter("country"));
         info.setPhone(request.getParameter("phone"));
+        ContactInfoDAO contactInfoDAO = new ContactInfoDAO();
+        try {
+			if(contactInfoDAO.saveContactInfo(info) > 0) {
+				
+				response.sendRedirect("bank-info.html");
+			}
 
-        HttpSession session = request.getSession();
-        session.setAttribute("contactInfo", info);
-        response.sendRedirect("bank-info.html");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 }

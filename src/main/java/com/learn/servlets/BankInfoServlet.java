@@ -1,15 +1,16 @@
 package com.learn.servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import com.learn.beans.BankInfo;
+import com.learn.dao.BankInfoDAO;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class BankInfoServlet
@@ -39,12 +40,23 @@ public class BankInfoServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		BankInfo info = new BankInfo();
 		info.setBankName(request.getParameter("bankName"));
-		info.setAccountNo(Integer.parseInt(request.getParameter("accountNo")));
-		info.setSsn(Integer.parseInt(request.getParameter("ssn")));
+		info.setAccountNo(request.getParameter("accountNo"));
+		info.setSsn(request.getParameter("ssn"));
 		
-		HttpSession session = request.getSession();
-		session.setAttribute("contactInfo", info);
-		response.sendRedirect("success.jsp");
+		BankInfoDAO bankInfoDAO = new BankInfoDAO();
+        try {
+			if(bankInfoDAO.saveBankInfo(info) > 0) {
+				response.sendRedirect("success.jsp");
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		
 	}
 

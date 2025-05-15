@@ -1,15 +1,16 @@
 package com.learn.servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import com.learn.beans.PersonalInfo;
+import com.learn.dao.PersonalInfoDAO;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class PersonalInfoServlet
@@ -37,14 +38,24 @@ public class PersonalInfoServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		PersonalInfo info = new PersonalInfo();
-        info.setFirstName(request.getParameter("firstName"));
-        info.setLastName(request.getParameter("lastName"));
-        info.setGender(request.getParameter("gender"));
+		PersonalInfo personalInfo = new PersonalInfo();	
+		personalInfo.setFirstName(request.getParameter("firstName"));
+        personalInfo.setLastName(request.getParameter("lastName"));
+        personalInfo.setGender(request.getParameter("gender"));
+        PersonalInfoDAO personalInfoDAO = new PersonalInfoDAO();
+        
+        try {
+			if(personalInfoDAO.savePersonalInfo(personalInfo) > 0) {
+				response.sendRedirect("contact-info.html");
+			}
 
-        HttpSession session = request.getSession();
-        session.setAttribute("personalInfo", info);
-        response.sendRedirect("contact-info.html");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
