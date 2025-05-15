@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class PersonalInfoServlet
@@ -18,14 +19,13 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/personal")
 public class PersonalInfoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
-    /**
-     * Default constructor. 
-     */
-    public PersonalInfoServlet() {
-        // TODO Auto-generated constructor stub
+	private final PersonalInfoDAO personalInfoDAO;
+	
+	public PersonalInfoServlet() {
+        this.personalInfoDAO = new PersonalInfoDAO();
     }
 
+    
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -38,24 +38,51 @@ public class PersonalInfoServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		PersonalInfo personalInfo = new PersonalInfo();	
+		
+		String firstName = validateInput(request.getParameter("firstName"), "First Name");
+        String lastName = validateInput(request.getParameter("lastName"), "Last Name");
+        String gender = validateInput(request.getParameter("gender"), "Gender");
+        
+        /*HttpSession session = request.getSession();
+        session.setAttribute("firstName", request.getParameter("firstName"));
+        session.setAttribute("lastName", request.getParameter("lastName"));
+        session.setAttribute("lastName", request.getParameter("gender"));
+        response.sendRedirect("contact-info.html");*/
+		
+        PersonalInfo personalInfo = new PersonalInfo();	
 		personalInfo.setFirstName(request.getParameter("firstName"));
         personalInfo.setLastName(request.getParameter("lastName"));
         personalInfo.setGender(request.getParameter("gender"));
-        PersonalInfoDAO personalInfoDAO = new PersonalInfoDAO();
+  
         
         try {
 			if(personalInfoDAO.savePersonalInfo(personalInfo) > 0) {
 				response.sendRedirect("contact-info.html");
 			}
-
+			else {
+				handleError(request, response, "Failed to save personal information");
+			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			handleError(request, response, "Database error occurred");
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			handleError(request, response, e.getMessage());
 		}
 	}
+	
+	
+	private String validateInput(String input, String fieldName) {
+        if (input == null || input.trim().isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " cannot be empty");
+        }
+        return input;
+    }
+	
+	private void handleError(HttpServletRequest request, HttpServletResponse response, String errorMessage) 
+            throws IOException {
+        request.getSession().setAttribute("error", errorMessage);
+        response.sendRedirect("personal-info.html");
+    }
 
 }

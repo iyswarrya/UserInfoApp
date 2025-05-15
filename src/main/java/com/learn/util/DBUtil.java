@@ -1,20 +1,29 @@
 package com.learn.util;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class DBUtil {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/userinfo?serverTimezone=UTC";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "sqlpractice1";
+    private static final String DB_URL;
+    private static final String DB_USER;
+    private static final String DB_PASSWORD;
     
     static {
-        try {
-            // Register JDBC driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        Properties props = new Properties();
+        try (InputStream input = DBUtil.class.getClassLoader().getResourceAsStream("database.properties")) {
+            props.load(input);
+            DB_URL = props.getProperty("db.url");
+            DB_USER = props.getProperty("db.user");
+            DB_PASSWORD = props.getProperty("db.password");
+
+            // Load driver class from properties
+            Class.forName(props.getProperty("db.driver"));
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Failed to initialize database connection", e);
         }
     }
     
@@ -27,7 +36,7 @@ public class DBUtil {
             try {
                 conn.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+            	throw new RuntimeException("Failed to close database connection", e);
             }
         }
     }

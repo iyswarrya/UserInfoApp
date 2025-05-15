@@ -18,12 +18,12 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/bank")
 public class BankInfoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	private final BankInfoDAO bankInfoDAO;
     /**
      * Default constructor. 
      */
     public BankInfoServlet() {
-        // TODO Auto-generated constructor stub
+        this.bankInfoDAO = new BankInfoDAO();
     }
 
 	/**
@@ -38,26 +38,42 @@ public class BankInfoServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String bankName = validateInput(request.getParameter("bankName"), "Bank Name");
+        String accountNo = validateInput(request.getParameter("accountNo"), "Account Number");
+        String ssn = validateInput(request.getParameter("ssn"), "SSN");
+		
 		BankInfo info = new BankInfo();
 		info.setBankName(request.getParameter("bankName"));
 		info.setAccountNo(request.getParameter("accountNo"));
 		info.setSsn(request.getParameter("ssn"));
 		
-		BankInfoDAO bankInfoDAO = new BankInfoDAO();
         try {
 			if(bankInfoDAO.saveBankInfo(info) > 0) {
 				response.sendRedirect("success.jsp");
+			}else {
+				handleError(request, response, "Failed to save bank information");
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			handleError(request, response, "Database error occurred");
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			handleError(request, response, e.getMessage());
 		}
-
 		
 	}
+	
+	private String validateInput(String input, String fieldName) {
+        if (input == null || input.trim().isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " cannot be empty");
+        }
+        return input;
+    }
+	
+	private void handleError(HttpServletRequest request, HttpServletResponse response, String errorMessage) 
+            throws IOException {
+        request.getSession().setAttribute("error", errorMessage);
+        response.sendRedirect("bank-info.html");
+    }
 
 }
