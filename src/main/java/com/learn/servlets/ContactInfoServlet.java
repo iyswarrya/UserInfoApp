@@ -19,12 +19,9 @@ import com.learn.dao.ContactInfoDAO;
 @WebServlet("/contact")
 public class ContactInfoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private final ContactInfoDAO contactInfoDAO;
-    /**
-     * Default constructor. 
-     */
+	
     public ContactInfoServlet() {
-        this.contactInfoDAO = new ContactInfoDAO();
+        
     }
 
 	/**
@@ -45,34 +42,18 @@ public class ContactInfoServlet extends HttpServlet {
         String country = validateInput(request.getParameter("country"), "Country");
         String phone = validateInput(request.getParameter("phone"), "Phone");
         
-        /*
+        ContactInfo info = new ContactInfo();
+        info.setAddress(address);
+        info.setCity(city);
+        info.setState(state);
+        info.setCountry(country);
+        info.setPhone(phone);
+        
+        
         HttpSession session = request.getSession();
-        session.setAttribute("address", request.getParameter("address"));
-        session.setAttribute("city", request.getParameter("city"));
-        session.setAttribute("state", request.getParameter("state"));
-        session.setAttribute("country", request.getParameter("country"));
-        session.setAttribute("phone", request.getParameter("phone"));*/
-        
-		ContactInfo info = new ContactInfo();
-        info.setAddress(request.getParameter("address"));
-        info.setCity(request.getParameter("city"));
-        info.setState(request.getParameter("state"));
-        info.setCountry(request.getParameter("country"));
-        info.setPhone(request.getParameter("phone"));
-        
-        try {
-			if(contactInfoDAO.saveContactInfo(info) > 0) {	
-				response.sendRedirect("bank-info.html");
-			}else {
-				handleError(request, response, "Failed to save contact information");
-			}
-		} catch (SQLException e) {
-			handleError(request, response, "Database error occurred");
-			e.printStackTrace();
-		} catch (IOException e) {
-			handleError(request, response, e.getMessage());
-		}
-
+        session.setAttribute("contactInfo", info);
+       
+        response.sendRedirect("bank-info.html");
 	}
 	
 	private String validateInput(String input, String fieldName) {
@@ -82,10 +63,5 @@ public class ContactInfoServlet extends HttpServlet {
         return input;
     }
 	
-	private void handleError(HttpServletRequest request, HttpServletResponse response, String errorMessage) 
-            throws IOException {
-        request.getSession().setAttribute("error", errorMessage);
-        response.sendRedirect("contact-info.html");
-    }
 
 }

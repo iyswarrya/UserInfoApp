@@ -8,15 +8,14 @@ import com.learn.beans.BankInfo;
 import com.learn.util.DBUtil;
 
 public class BankInfoDAO {
-	public int saveBankInfo(BankInfo bankInfo) throws SQLException {
+	public int saveBankInfo(Connection conn, BankInfo bankInfo) throws SQLException {
 		if (bankInfo == null) {
             throw new IllegalArgumentException("BankInfo cannot be null");
         }
 		
 		String sql = "INSERT INTO bank_info (bankName, accountNo, ssn) VALUES (?, ?, ?)";
 		
-		try (Connection conn = DBUtil.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(sql)){
+		try (PreparedStatement pstmt = conn.prepareStatement(sql)){
 	                pstmt.setString(1, bankInfo.getBankName());
 	                pstmt.setString(2, bankInfo.getAccountNo());
 	                pstmt.setString(3, bankInfo.getSsn());

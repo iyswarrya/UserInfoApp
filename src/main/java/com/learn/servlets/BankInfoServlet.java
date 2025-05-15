@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class BankInfoServlet
@@ -18,12 +19,12 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/bank")
 public class BankInfoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private final BankInfoDAO bankInfoDAO;
+	
     /**
      * Default constructor. 
      */
     public BankInfoServlet() {
-        this.bankInfoDAO = new BankInfoDAO();
+        
     }
 
 	/**
@@ -41,25 +42,15 @@ public class BankInfoServlet extends HttpServlet {
 		String bankName = validateInput(request.getParameter("bankName"), "Bank Name");
         String accountNo = validateInput(request.getParameter("accountNo"), "Account Number");
         String ssn = validateInput(request.getParameter("ssn"), "SSN");
+        
+        BankInfo info = new BankInfo();
+		info.setBankName(bankName);
+		info.setAccountNo(accountNo);
+		info.setSsn(ssn);
 		
-		BankInfo info = new BankInfo();
-		info.setBankName(request.getParameter("bankName"));
-		info.setAccountNo(request.getParameter("accountNo"));
-		info.setSsn(request.getParameter("ssn"));
-		
-        try {
-			if(bankInfoDAO.saveBankInfo(info) > 0) {
-				response.sendRedirect("success.jsp");
-			}else {
-				handleError(request, response, "Failed to save bank information");
-			}
-
-		} catch (SQLException e) {
-			handleError(request, response, "Database error occurred");
-			e.printStackTrace();
-		} catch (IOException e) {
-			handleError(request, response, e.getMessage());
-		}
+        HttpSession session = request.getSession();
+        session.setAttribute("bankInfo", info);
+        response.sendRedirect("FinalServlet");
 		
 	}
 	
@@ -70,10 +61,4 @@ public class BankInfoServlet extends HttpServlet {
         return input;
     }
 	
-	private void handleError(HttpServletRequest request, HttpServletResponse response, String errorMessage) 
-            throws IOException {
-        request.getSession().setAttribute("error", errorMessage);
-        response.sendRedirect("bank-info.html");
-    }
-
 }

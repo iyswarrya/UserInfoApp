@@ -19,10 +19,9 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/personal")
 public class PersonalInfoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private final PersonalInfoDAO personalInfoDAO;
 	
 	public PersonalInfoServlet() {
-        this.personalInfoDAO = new PersonalInfoDAO();
+       
     }
 
     
@@ -43,32 +42,17 @@ public class PersonalInfoServlet extends HttpServlet {
         String lastName = validateInput(request.getParameter("lastName"), "Last Name");
         String gender = validateInput(request.getParameter("gender"), "Gender");
         
-        /*HttpSession session = request.getSession();
-        session.setAttribute("firstName", request.getParameter("firstName"));
-        session.setAttribute("lastName", request.getParameter("lastName"));
-        session.setAttribute("lastName", request.getParameter("gender"));
-        response.sendRedirect("contact-info.html");*/
-		
-        PersonalInfo personalInfo = new PersonalInfo();	
-		personalInfo.setFirstName(request.getParameter("firstName"));
-        personalInfo.setLastName(request.getParameter("lastName"));
-        personalInfo.setGender(request.getParameter("gender"));
-  
+        PersonalInfo personalInfo = new PersonalInfo();
+        personalInfo.setFirstName(firstName);
+        personalInfo.setLastName(lastName);
+        personalInfo.setGender(gender);
+
         
-        try {
-			if(personalInfoDAO.savePersonalInfo(personalInfo) > 0) {
-				response.sendRedirect("contact-info.html");
-			}
-			else {
-				handleError(request, response, "Failed to save personal information");
-			}
-		} catch (SQLException e) {
-			handleError(request, response, "Database error occurred");
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			handleError(request, response, e.getMessage());
-		}
+        HttpSession session = request.getSession();
+        session.setAttribute("personalInfo", personalInfo);
+        
+        response.sendRedirect("contact-info.html");
+		
 	}
 	
 	
@@ -79,10 +63,5 @@ public class PersonalInfoServlet extends HttpServlet {
         return input;
     }
 	
-	private void handleError(HttpServletRequest request, HttpServletResponse response, String errorMessage) 
-            throws IOException {
-        request.getSession().setAttribute("error", errorMessage);
-        response.sendRedirect("personal-info.html");
-    }
-
+	
 }
