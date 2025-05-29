@@ -4,8 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.learn.beans.PersonalInfo;
-import com.learn.util.DBUtil;
+import com.learn.model.PersonalInfo;
 
 public class PersonalInfoDAO {
     

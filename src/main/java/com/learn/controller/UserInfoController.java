@@ -14,9 +14,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/user/*")
+@WebServlet(urlPatterns = {"/user/*"})
 public class UserInfoController extends HttpServlet {
-    private final UserInfoService userInfoService;
+    private static final long serialVersionUID = 1L;
+	private final UserInfoService userInfoService;
     
     public UserInfoController() {
         this.userInfoService = new UserInfoService();
@@ -67,14 +68,16 @@ public class UserInfoController extends HttpServlet {
     private void handleContactInfo(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        PersonalInfo personalInfo = (PersonalInfo) session.getAttribute("personalInfo");
         
-        // Create ContactInfo object
-        ContactInfo contactInfo = new ContactInfo();
-        contactInfo.setEmail(request.getParameter("email"));
-        contactInfo.setPhone(request.getParameter("phone"));
         
-        session.setAttribute("contactInfo", contactInfo);   
+        ContactInfo info = new ContactInfo();
+        info.setAddress(request.getParameter("address"));
+        info.setCity(request.getParameter("city"));
+        info.setState(request.getParameter("state"));
+        info.setCountry(request.getParameter("country"));
+        info.setPhone(request.getParameter("phone"));
+        
+        session.setAttribute("contactInfo", info);   
         
         response.sendRedirect(request.getContextPath() + "/bank-info.html");
     }
@@ -82,14 +85,14 @@ public class UserInfoController extends HttpServlet {
     private void handleBankInfo(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        ContactInfo contactInfo = (ContactInfo) session.getAttribute("contactInfo");
         
         // Create BankInfo object
-        BankInfo bankInfo = new BankInfo();
-        bankInfo.setAccountNumber(request.getParameter("accountNumber"));
-        bankInfo.setRoutingNumber(request.getParameter("routingNumber"));
+        BankInfo info = new BankInfo();
+		info.setBankName(request.getParameter("bankName"));
+		info.setAccountNo(request.getParameter("accountNo"));
+		info.setSsn(request.getParameter("ssn"));
         
-        session.setAttribute("bankInfo", bankInfo);
+        session.setAttribute("bankInfo", info);
         
         response.sendRedirect(request.getContextPath() + "/submit.html");
     }

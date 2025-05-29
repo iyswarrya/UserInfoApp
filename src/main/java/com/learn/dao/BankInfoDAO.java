@@ -4,8 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.learn.beans.BankInfo;
-import com.learn.util.DBUtil;
+import com.learn.model.BankInfo;
 
 public class BankInfoDAO {
 	public int saveBankInfo(Connection conn, BankInfo bankInfo) throws SQLException {

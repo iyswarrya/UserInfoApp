@@ -6,6 +6,16 @@
     
     <display-name>UserInfoApp</display-name>
     
+    <servlet>
+        <servlet-name>UserInfoController</servlet-name>
+        <servlet-class>com.learn.controller.UserInfoController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>UserInfoController</servlet-name>
+        <url-pattern>/user/*</url-pattern>
+    </servlet-mapping>
+    
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>

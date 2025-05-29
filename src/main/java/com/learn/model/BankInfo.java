@@ -1,31 +1,49 @@
 package com.learn.model;
 
 public class BankInfo {
-    private String accountNumber;
-    private String routingNumber;
+    private String accountNo;
+    private String bankName;
+    private String Ssn;
     
-    public String getAccountNumber() {
-        return accountNumber;
-    }
     
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
     
-    public String getRoutingNumber() {
-        return routingNumber;
-    }
-    
-    public void setRoutingNumber(String routingNumber) {
-        this.routingNumber = routingNumber;
-    }
-    
-    public void validate() {
-        if (accountNumber == null || accountNumber.trim().isEmpty()) {
-            throw new IllegalArgumentException("Account number cannot be empty");
-        }
-        if (routingNumber == null || routingNumber.trim().isEmpty()) {
-            throw new IllegalArgumentException("Routing number cannot be empty");
-        }
+    public String getAccountNo() {
+		return accountNo;
+	}
+
+
+
+	public void setAccountNo(String accountNo) {
+		this.accountNo = accountNo;
+	}
+
+
+
+	public String getBankName() {
+		return bankName;
+	}
+
+
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+
+
+	public String getSsn() {
+		return Ssn;
+	}
+
+
+
+	public void setSsn(String ssn) {
+		Ssn = ssn;
+	}
+
+
+
+	public void validate() {
+        
     }
 } 

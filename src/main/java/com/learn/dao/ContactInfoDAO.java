@@ -4,8 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.learn.beans.ContactInfo;
-import com.learn.util.DBUtil;
+import com.learn.model.ContactInfo;
 
 public class ContactInfoDAO {
 	public int saveContactInfo(Connection conn, ContactInfo contactInfo) throws SQLException {
