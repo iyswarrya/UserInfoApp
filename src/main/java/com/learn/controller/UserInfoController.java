@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet(urlPatterns = {"/user/*"})
+@WebServlet("/user/*")
 public class UserInfoController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 	private final UserInfoService userInfoService;
@@ -61,7 +61,7 @@ public class UserInfoController extends HttpServlet {
         HttpSession session = request.getSession();
         session.setAttribute("personalInfo", personalInfo);
         
-        response.sendRedirect(request.getContextPath() + "/contact-info.html");
+        response.sendRedirect(request.getContextPath() + "/contact-info.jsp");
     }
     
     // Similar methods for handleContactInfo and handleBankInfo
@@ -79,7 +79,7 @@ public class UserInfoController extends HttpServlet {
         
         session.setAttribute("contactInfo", info);   
         
-        response.sendRedirect(request.getContextPath() + "/bank-info.html");
+        response.sendRedirect(request.getContextPath() + "/bank-info.jsp");
     }
     
     private void handleBankInfo(HttpServletRequest request, HttpServletResponse response) 
@@ -94,7 +94,7 @@ public class UserInfoController extends HttpServlet {
         
         session.setAttribute("bankInfo", info);
         
-        response.sendRedirect(request.getContextPath() + "/submit.html");
+        handleFinalSubmission(request, response);
     }
     
     private void handleFinalSubmission(HttpServletRequest request, HttpServletResponse response) 

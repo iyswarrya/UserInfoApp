@@ -5,7 +5,7 @@
 <title>Bank Information</title>
 </head>
 <body>
-<form action="bank" method="post">
+<form action="${pageContext.request.contextPath}/user/bank" method="post">
 		Bank Name: <input type="text" name="bankName" required><br>
         Account Number: <input type="text" name="accountNo" required><br>
         SSN: <input type="text" name="ssn" required><br>

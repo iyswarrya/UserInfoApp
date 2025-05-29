@@ -5,7 +5,7 @@
 <title>Contact Information</title>
 </head>
 <body>
- <form action="contact" method="post">
+ <form action="${pageContext.request.contextPath}/user/contact" method="post">
         Address: <input type="text" name="address" required><br>
         City: <input type="text" name="city" required><br>
         State: <input type="text" name="state" required><br>
